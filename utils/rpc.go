@@ -1,5 +1,7 @@
 package utils
+
 import (
+	"log"
 	"net/http"
 	"strings"
 )
@@ -8,6 +10,12 @@ type Requests struct {
 	Method string
 }
 
+var configs = GetConnectionCredentials()
+var (
+	username = configs.Rpcusername
+	password = configs.Rpcpassword
+)
+
 func RpcCalls(r *Requests) *http.Response {
 
 	body := strings.NewReader(`{ "method": "` + r.Method + `"}`)
@@ -15,7 +23,8 @@ func RpcCalls(r *Requests) *http.Response {
 	if err != nil {
 		// handle err
 	}
-	req.SetBasicAuth("rpcusername", "rpcpassword")
+	log.Println("here:", configs)
+	req.SetBasicAuth(username, password)
 	//req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := http.DefaultClient.Do(req)
@@ -24,4 +33,5 @@ func RpcCalls(r *Requests) *http.Response {
 	}
 
 	return resp
+
 }

@@ -1,7 +1,8 @@
 package main
 
-import "fmt"
-
 func main() {
-	fmt.Print("Initial setup")
+	//TODO:Add routes
+
+
+	//TODO: Initialize API server
 }
