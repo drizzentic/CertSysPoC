@@ -12,5 +12,4 @@
 *.out
 *.idea
 app.yaml
-vendor/*
 tests/app.yaml

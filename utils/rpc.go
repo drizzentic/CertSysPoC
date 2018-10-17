@@ -25,7 +25,6 @@ func RpcCalls(r *Requests) *http.Response {
 	}
 	log.Println("here:", configs)
 	req.SetBasicAuth(username, password)
-	//req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
