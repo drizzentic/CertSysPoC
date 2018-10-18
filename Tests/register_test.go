@@ -8,7 +8,7 @@ import (
 
 func TestCreateAddress(t *testing.T) {
 
-	s := controllers.Register()
+	s := controllers.RequestAddress()
 	match, _ := regexp.MatchString("[a-zA-Z1-9]{27,35}$", s)
 
 	if !match {

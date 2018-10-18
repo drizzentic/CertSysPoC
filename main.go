@@ -12,7 +12,7 @@ import (
 func init() {
 
 	//Create ipfs folder for the university
-	directory := utils.GetConnectionCredentials().Institution
+	directory := utils.GetConfigs().Institution
 
 	utils.CreateDirIfNotExist(directory)
 
@@ -21,7 +21,7 @@ func main() {
 
 	//TODO:Add routes
 	r := mux.NewRouter()
-	r.HandleFunc("/get_address", controllers.RequestAddress).Methods(http.MethodGet)
+	//r.HandleFunc("/get_address", controllers.RequestAddress).Methods(http.MethodGet)
 	r.HandleFunc("/create_profile", controllers.CreateProfile)
 	http.Handle("/", r)
 

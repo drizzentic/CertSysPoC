@@ -9,13 +9,14 @@ import (
 )
 
 type Configurations struct {
-	Rpcusername string `yaml:"rpcusername"`
-	Rpcpassword string `yaml:"rpcpassword"`
-	Institution string `yaml:"institution"`
+	Rpcusername      string `yaml:"rpcusername"`
+	Rpcpassword      string `yaml:"rpcpassword"`
+	Institution      string `yaml:"institution"`
+	TransactionValue string `yaml:"transaction_value"`
 }
 
 //Get connection creds
-func GetConnectionCredentials() Configurations {
+func GetConfigs() Configurations {
 
 	var c Configurations
 	//Obtain values from yaml config
@@ -52,4 +53,8 @@ func DeleteDirIfExist(dir string) {
 	}
 
 	fmt.Print(dir)
+}
+
+func generateOPReturnHex() {
+
 }

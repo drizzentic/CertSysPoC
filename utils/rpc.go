@@ -1,29 +1,31 @@
 package utils
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"strings"
 )
 
 type Requests struct {
 	Method string
+	Params []string
 }
 
-var configs = GetConnectionCredentials()
+var configs = GetConfigs()
 var (
 	username = configs.Rpcusername
 	password = configs.Rpcpassword
 )
 
-func RpcCalls(r *Requests) *http.Response {
-
-	body := strings.NewReader(`{ "method": "` + r.Method + `"}`)
+func RpcCalls(r *Requests, p []string) *http.Response {
+	params := strings.Join(p, "\",\"")
+	body := strings.NewReader(`{ "method": "` + r.Method + `","params":["` + params + `"]}`)
+	fmt.Print(&body)
 	req, err := http.NewRequest("POST", "http://127.0.0.1:5000", body)
 	if err != nil {
 		// handle err
 	}
-	log.Println("here:", configs)
+
 	req.SetBasicAuth(username, password)
 
 	resp, err := http.DefaultClient.Do(req)

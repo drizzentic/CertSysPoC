@@ -5,14 +5,9 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
-)
-
-const (
-	createAddress = "getnewaddress"
 )
 
 type Student struct {
@@ -23,29 +18,11 @@ type Student struct {
 	Department      string `json:"department"`
 	ResultsAddress  string `json:"results_address"`
 }
-type Response struct {
-	Results string `json:"result"`
-	Error   string `json:"error"`
-	Id      string `json:"id"`
-}
-
-func RequestAddress(resp http.ResponseWriter, req *http.Request) {
-	var address Response
-	method := utils.Requests{createAddress}
-	response := utils.RpcCalls(&method)
-	body, _ := ioutil.ReadAll(response.Body)
-	if err := json.Unmarshal(body, &address); err != nil {
-		panic(err)
-	}
-	defer response.Body.Close()
-
-	resp.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(resp).Encode(&address)
-}
 
 //Create student profile
 func CreateProfile(resp http.ResponseWriter, req *http.Request) {
 	var s Student
+
 	//Extract data from requests
 	body, _ := ioutil.ReadAll(req.Body)
 
@@ -54,10 +31,9 @@ func CreateProfile(resp http.ResponseWriter, req *http.Request) {
 	//Extract the name and admission number to be used to create a unique file for student
 
 	name := s.Name
-	address := s.ResultsAddress
-	admissionNumber := s.AdmissionNumber
 
-	filename := name + address + admissionNumber
+	admissionNumber := s.AdmissionNumber
+	filename := name + admissionNumber
 
 	//Generate hash and create directory within the institution's folder
 
@@ -66,17 +42,25 @@ func CreateProfile(resp http.ResponseWriter, req *http.Request) {
 
 	directoryHash := hex.EncodeToString(h.Sum(nil))
 
-	parentDir := utils.GetConnectionCredentials().Institution
+	parentDir := utils.GetConfigs().Institution
 	path := []string{}
 	path = append(path, parentDir)
 	path = append(path, string(directoryHash))
 	newDir := strings.Join(path, "/")
 
-	fmt.Print(string(newDir))
+	address := requestAddress(string(directoryHash))
+	s.ResultsAddress = address
 
 	utils.CreateDirIfNotExist(newDir)
 
+	//create a transaction on blockchain with the filename
+
+	//Check balance
+
+	createSimpleSpend(address, string(directoryHash))
+
 	resp.Header().Set("Content-Type", "application/json")
+
 	json.NewEncoder(resp).Encode(&s)
 
 	//Run operations to push the data to the ipfs nodes.
