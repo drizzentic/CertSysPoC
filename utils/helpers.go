@@ -40,8 +40,6 @@ func CreateDirIfNotExist(dir string) {
 			panic(err)
 		}
 	}
-
-	fmt.Print(dir)
 }
 
 func DeleteDirIfExist(dir string) {

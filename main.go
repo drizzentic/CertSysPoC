@@ -13,7 +13,10 @@ func init() {
 
 	//Create ipfs folder for the university
 	directory := utils.GetConfigs().Institution
+	//Create Account for the university
+	controllers.CreateUniversityProfile(directory)
 
+	//Create directory
 	utils.CreateDirIfNotExist(directory)
 
 }
@@ -21,8 +24,9 @@ func main() {
 
 	//TODO:Add routes
 	r := mux.NewRouter()
-	//r.HandleFunc("/get_address", controllers.RequestAddress).Methods(http.MethodGet)
-	r.HandleFunc("/create_profile", controllers.CreateProfile)
+	r.HandleFunc("/results", controllers.GetResults).Methods(http.MethodPost)
+	r.HandleFunc("/results/create", controllers.CreateResults).Methods(http.MethodPost)
+	r.HandleFunc("/profile", controllers.CreateStudentProfile)
 	http.Handle("/", r)
 
 	//TODO: Initialize API server

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"certSys/utils"
+	"fmt"
 	"log"
 )
 
@@ -15,12 +16,19 @@ type Error struct {
 	Message string `json:"message"`
 }
 
+type rawTransaction struct {
+	Txid string `json:"txid"`
+	Vout int    `json:"vout"`
+}
+
 const (
 	createAddress         = "getnewaddress"
 	sendToAddress         = "sendtoaddress"
 	getAccountAddress     = "getaccountaddress"
 	getAddressesbyAccount = "getaddressesbyaccount"
 	getAccountBalance     = "getbalance"
+	generate              = "generate"
+	createRawTransaction  = "createrawtransaction"
 )
 
 func requestAddress(filename string) string {
@@ -29,13 +37,13 @@ func requestAddress(filename string) string {
 
 	params := []string{filename}
 
-	address := processRpcCalls(getAddressesbyAccount, params)
+	address := processRpcCalls(getAddressesbyAccount, params, "")
 
 	bcAddress = CheckResultsType(address)
 
 	if bcAddress == "" {
 		log.Println("Creating a new address for the student")
-		newAddress := processRpcCalls(createAddress, params)
+		newAddress := processRpcCalls(createAddress, params, "")
 
 		return newAddress.Results.(string)
 
@@ -47,21 +55,24 @@ func requestAddress(filename string) string {
 
 //Create transaction
 
-func createSimpleSpend(address string, comment string) string {
+func createSimpleSpend(address string, comment string) Response {
 
 	log.Println("This is the address", address)
 
 	params := []string{address, utils.GetConfigs().TransactionValue, comment}
 
-	txid := processRpcCalls(sendToAddress, params)
-
-	//ToDO: Return appropriate error messages to the user
-	if txid.Results == nil {
-
-		return txid.Error.Message
+	txid := processRpcCalls(sendToAddress, params, "")
+	//TODO: Return appropriate error messages to the user
+	if (Error{}) != txid.Error {
+		errorCode := txid.Error.Code
+		if errorCode != 0 {
+			//Invoke generate new blocks to add balance
+			processRpcCalls(generate, []string{"1"}, "")
+		}
+		return txid
 
 	}
-	return txid.Results.(string)
+	return txid
 }
 
 func CheckResultsType(a Response) string {
@@ -82,10 +93,24 @@ func CheckResultsType(a Response) string {
 
 	return bcAddress
 }
-func createRawTransaction() {
+func checkAccountAddress(accountName string) Response {
+
+	address := processRpcCalls(getAccountAddress, []string{accountName}, "")
+
+	return address
 
 }
-func signTransaction() {
+func createTransaction(txid string, data string) {
+	raw := []string{txid}
+	result := processRpcCalls(createRawTransaction, raw, data)
+
+	//Sign transaction
+	fmt.Print(result)
+
+	signTransaction(result)
+
+}
+func signTransaction(r Response) {
 
 }
 
@@ -95,8 +120,5 @@ func sendTransaction() {
 
 func SearchAccountbyHash() {
 	//Returns the account name for the user based on the hash generated from name and admission
-
-}
-func checkAccountAddress() {
 
 }

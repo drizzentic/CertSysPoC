@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -20,9 +21,8 @@ type Student struct {
 }
 
 //Create student profile
-func CreateProfile(resp http.ResponseWriter, req *http.Request) {
+func CreateStudentProfile(resp http.ResponseWriter, req *http.Request) {
 	var s Student
-
 	//Extract data from requests
 	body, _ := ioutil.ReadAll(req.Body)
 
@@ -39,7 +39,8 @@ func CreateProfile(resp http.ResponseWriter, req *http.Request) {
 
 	h := sha1.New()
 	h.Write([]byte(filename))
-
+	a := fmt.Sprintf("%x", h.Sum(nil))
+	fmt.Print(a)
 	directoryHash := hex.EncodeToString(h.Sum(nil))
 
 	parentDir := utils.GetConfigs().Institution
@@ -49,19 +50,20 @@ func CreateProfile(resp http.ResponseWriter, req *http.Request) {
 	newDir := strings.Join(path, "/")
 
 	address := requestAddress(string(directoryHash))
+
+	//Create a university account
+	requestAddress(string(directoryHash))
+
 	s.ResultsAddress = address
 
 	utils.CreateDirIfNotExist(newDir)
 
-	//create a transaction on blockchain with the filename
-
-	//Check balance
-
-	createSimpleSpend(address, string(directoryHash))
+	// Create transaction on the Blockchain
+	response := createSimpleSpend(address, string(directoryHash))
 
 	resp.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(resp).Encode(&s)
+	json.NewEncoder(resp).Encode(response)
 
 	//Run operations to push the data to the ipfs nodes.
 	go func() {
@@ -70,4 +72,17 @@ func CreateProfile(resp http.ResponseWriter, req *http.Request) {
 
 		//utils.DeleteDirIfExist(strings.Join(path,"/"))
 	}()
+}
+func CreateUniversityProfile(university string) {
+
+	//Generate hash and create directory within the institution's folder
+
+	h := sha1.New()
+
+	h.Write([]byte(university))
+
+	universityHash := hex.EncodeToString(h.Sum(nil))
+
+	requestAddress(string(universityHash))
+
 }
