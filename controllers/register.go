@@ -5,20 +5,10 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
 )
-
-type Student struct {
-	Name            string `json:"fullname"`
-	AdmissionNumber string `json:"admission_number"`
-	School          string `json:"school"`
-	Award           string `json:"award"`
-	Department      string `json:"department"`
-	ResultsAddress  string `json:"results_address"`
-}
 
 //Create student profile
 func CreateStudentProfile(resp http.ResponseWriter, req *http.Request) {
@@ -37,11 +27,7 @@ func CreateStudentProfile(resp http.ResponseWriter, req *http.Request) {
 
 	//Generate hash and create directory within the institution's folder
 
-	h := sha1.New()
-	h.Write([]byte(filename))
-	a := fmt.Sprintf("%x", h.Sum(nil))
-	fmt.Print(a)
-	directoryHash := hex.EncodeToString(h.Sum(nil))
+	directoryHash := utils.GetHash(filename)
 
 	parentDir := utils.GetConfigs().Institution
 	path := []string{}

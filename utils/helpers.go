@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -55,4 +57,15 @@ func DeleteDirIfExist(dir string) {
 
 func generateOPReturnHex() {
 
+}
+func GetHash(filename string) string {
+	//Generate hash and create directory within the institution's folder
+
+	h := sha1.New()
+	h.Write([]byte(filename))
+	a := fmt.Sprintf("%x", h.Sum(nil))
+	fmt.Println("filename", a)
+	directoryHash := hex.EncodeToString(h.Sum(nil))
+
+	return directoryHash
 }

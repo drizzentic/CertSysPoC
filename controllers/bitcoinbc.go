@@ -29,6 +29,7 @@ const (
 	getAccountBalance     = "getbalance"
 	generate              = "generate"
 	createRawTransaction  = "createrawtransaction"
+	listTransactions      = "listtransactions"
 )
 
 func requestAddress(filename string) string {
