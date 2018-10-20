@@ -31,8 +31,7 @@ func GetResults(r http.ResponseWriter, w *http.Request) {
 func CreateResults(r http.ResponseWriter, w *http.Request) {
 	body, _ := ioutil.ReadAll(w.Body)
 	json.Unmarshal(body, &o)
-	//TODO:Create json file for the data and post hash as transaction to blockchain
-	//Get directory for the user
+
 	fileFolder := utils.GetHash(o.OverallResults.Name + o.OverallResults.AdmissionNumber)
 
 	filesDirectory := utils.GetConfigs().Institution + "/" + fileFolder
