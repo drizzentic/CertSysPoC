@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"gopkg.in/yaml.v2"
@@ -61,7 +61,7 @@ func generateOPReturnHex() {
 func GetHash(filename string) string {
 	//Generate hash and create directory within the institution's folder
 
-	h := sha1.New()
+	h := sha256.New()
 	h.Write([]byte(filename))
 	a := fmt.Sprintf("%x", h.Sum(nil))
 	fmt.Println("filename", a)
@@ -69,3 +69,12 @@ func GetHash(filename string) string {
 
 	return directoryHash
 }
+
+func GetDirectory(name string, admissionNumber string) (string,string) {
+	fileFolder := GetHash(name + admissionNumber)
+
+	filesDirectory := GetConfigs().Institution + "/" + fileFolder
+
+	return filesDirectory,fileFolder
+}
+

@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"certSys/utils"
-	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
@@ -63,7 +63,7 @@ func CreateUniversityProfile(university string) {
 
 	//Generate hash and create directory within the institution's folder
 
-	h := sha1.New()
+	h := sha256.New()
 
 	h.Write([]byte(university))
 
