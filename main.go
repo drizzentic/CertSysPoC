@@ -1,8 +1,9 @@
 package main
 
 import (
-	"certSys/controllers"
-	"certSys/utils"
+	"github.com/CertSysPoC/controllers"
+	"github.com/CertSysPoC/utils"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -32,12 +33,19 @@ func main() {
 	//TODO: Initialize API server
 	srv := &http.Server{
 		Handler: r,
-		Addr:    "127.0.0.1:8000",
+		Addr:    "127.0.0.1:8001",
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
 
-	log.Fatal(srv.ListenAndServe())
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	originsOk := handlers.AllowedOrigins([]string{"Allow-Origin"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
+	// start server listen
+	// with error handling
+	log.Fatal(srv.ListenAndServe(), handlers.CORS(originsOk, headersOk, methodsOk)(r))
+	//log.Fatal(srv.ListenAndServe(":" + os.Getenv("PORT"), handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 
 }

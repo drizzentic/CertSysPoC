@@ -32,9 +32,10 @@ func RpcCalls(r *Requests, p []string, data string, vout int) *http.Response {
 		body = strings.NewReader(`{ "method": "` + r.Method + `","params":["` + params + `"]}`)
 	}
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:5000", body)
+	req, err := http.NewRequest("POST", "http://127.0.0.1:19001", body)
 	if err != nil {
 		// handle err
+		//fmt.Println(err)
 	}
 
 	req.SetBasicAuth(username, password)
@@ -43,20 +44,21 @@ func RpcCalls(r *Requests, p []string, data string, vout int) *http.Response {
 
 	if err != nil {
 		// handle err
+		//fmt.Println(err)
 	}
 
 	return resp
 
 }
 
-func HttpCalls(r bool, file string )  {
+func HttpCalls(r bool, file string) {
 
-	resp, err := http.Get("http://127.0.0.1:5000/api/v0/add?arg="+file+"&hash=sha2-256")
+	resp, err := http.Get("http://127.0.0.1:5000/api/v0/add?arg=" + file + "&hash=sha2-256")
 	if err != nil {
 		// handle err
 	}
 	defer resp.Body.Close()
 
-fmt.Print(resp.StatusCode)
-	
+	fmt.Print(resp.StatusCode)
+
 }

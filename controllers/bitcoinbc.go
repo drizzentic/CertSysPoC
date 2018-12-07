@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"certSys/utils"
 	"fmt"
+	"github.com/CertSysPoC/utils"
 	"log"
 )
 
