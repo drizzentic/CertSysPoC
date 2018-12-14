@@ -25,9 +25,9 @@ func main() {
 
 	//TODO:Add routes
 	r := mux.NewRouter()
-	r.HandleFunc("/results", controllers.GetResults).Methods(http.MethodPost)
-	r.HandleFunc("/results/create", controllers.CreateResults).Methods(http.MethodPost)
-	r.HandleFunc("/profile", controllers.CreateStudentProfile)
+	r.HandleFunc("/results", controllers.GetResults).Methods(http.MethodPost, http.MethodOptions)
+	r.HandleFunc("/results/create", controllers.CreateResults).Methods(http.MethodPost, http.MethodOptions)
+	r.HandleFunc("/profile", controllers.CreateStudentProfile).Methods(http.MethodPost, http.MethodOptions)
 	http.Handle("/", r)
 
 	//TODO: Initialize API server
