@@ -7,6 +7,7 @@ import (
 	"github.com/CertSysPoC/utils"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 var (
@@ -28,6 +29,22 @@ func GetResults(r http.ResponseWriter, w *http.Request) {
 	r.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(r).Encode(transactions.Results)
 }
+
+func GetTranscript(r http.ResponseWriter, w *http.Request) {
+
+	filename := w.URL.Query().Get("hash")
+	student := w.URL.Query().Get("student")
+	institution := utils.GetConfigs().Institution
+	jsonFile, err := os.Open(institution + "/" + student + "/" + filename + ".json")
+
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+	r.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(r).Encode(jsonFile)
+}
+
 func CreateResults(r http.ResponseWriter, w *http.Request) {
 	body, _ := ioutil.ReadAll(w.Body)
 	json.Unmarshal(body, &o)

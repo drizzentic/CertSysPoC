@@ -28,6 +28,7 @@ func main() {
 	r.HandleFunc("/results", controllers.GetResults).Methods(http.MethodPost, http.MethodOptions)
 	r.HandleFunc("/results/create", controllers.CreateResults).Methods(http.MethodPost, http.MethodOptions)
 	r.HandleFunc("/profile", controllers.CreateStudentProfile).Methods(http.MethodPost, http.MethodOptions)
+	r.HandleFunc("/transcript/{hash}", controllers.GetTranscript).Methods(http.MethodGet, http.MethodOptions)
 	http.Handle("/", r)
 
 	//TODO: Initialize API server
